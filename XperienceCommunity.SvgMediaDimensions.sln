@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{955BDF86-296F-47A1-98DB-DC8D4041BC73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XperienceCommunity.SvgMediaDimensions", "src\XperienceCommunity.SvgMediaDimensions\XperienceCommunity.SvgMediaDimensions.csproj", "{BA210658-E33C-4EC9-A82B-880E5CA289FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA210658-E33C-4EC9-A82B-880E5CA289FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA210658-E33C-4EC9-A82B-880E5CA289FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA210658-E33C-4EC9-A82B-880E5CA289FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA210658-E33C-4EC9-A82B-880E5CA289FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BA210658-E33C-4EC9-A82B-880E5CA289FD} = {955BDF86-296F-47A1-98DB-DC8D4041BC73}
+	EndGlobalSection
+EndGlobal
