@@ -6,7 +6,7 @@ Sets the width/height of SVG images when uploaded/updated in the Administration 
 
 With SVG width/height values, developers can ensure that when files are rendered on the live site, the `<img>` element has width/height values.
 
-These values help the browser know [how much space to reserve in the layout](https://www.smashingmagazine.com/2020/03/setting-height-width-images-important-again/) for the image before it is downloaded.
+These values help the browser know [how much space to reserve in the layout](https://www.smashingmagazine.com/2020/03/setting-height-width-images-important-again/) for the image before it is downloaded from the server and rendered.
 
 This helps improve [Core Web Vitals](https://web.dev/vitals/) by reducing [Cumulative Layout Shift](https://web.dev/cls/).
 

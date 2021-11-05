@@ -11,7 +11,7 @@ namespace XperienceCommunity.SvgMediaDimensions
 {
     /// <summary>
     /// Uses https://github.com/svg-net/SVG to parse SVG metadata and sets the uploaded image's
-    /// metadata on the database record
+    /// width/height so it can persisted in the database.
     /// </summary>
     public class SvgMediaDimensionsParser
     {
