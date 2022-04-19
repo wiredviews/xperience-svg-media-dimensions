@@ -3,6 +3,7 @@ using CMS.Base;
 using CMS.Core;
 using CMS.DataEngine;
 using CMS.DocumentEngine;
+using CMS.Helpers;
 using CMS.MediaLibrary;
 using XperienceCommunity.SvgMediaDimensions;
 
@@ -37,6 +38,11 @@ namespace XperienceCommunity.SvgMediaDimensions
                 return;
             }
 
+            if (!IsParsingEnabled)
+            {
+                return;
+            }
+
             var parser = new SvgMediaDimensionsParser(SiteService, EventLogService);
 
             parser.SetDimensions(metaFile);
@@ -49,6 +55,11 @@ namespace XperienceCommunity.SvgMediaDimensions
                 return;
             }
 
+            if (!IsParsingEnabled)
+            {
+                return;
+            }
+
             var parser = new SvgMediaDimensionsParser(SiteService, EventLogService);
 
             parser.SetDimensions(attachment);
@@ -57,6 +68,11 @@ namespace XperienceCommunity.SvgMediaDimensions
         private void MediaFile_BeforeSave(object sender, ObjectEventArgs e)
         {
             if (!(e.Object is MediaFileInfo mediaFile))
+            {
+                return;
+            }
+
+            if (!IsParsingEnabled)
             {
                 return;
             }
@@ -93,6 +109,16 @@ namespace XperienceCommunity.SvgMediaDimensions
                 }
 
                 return eventLogService;
+            }
+        }
+
+        private bool IsParsingEnabled
+        {
+            get
+            {
+                var settings = Service.Resolve<ISettingsService>();
+
+                return ValidationHelper.GetBoolean(settings["SvgMediaDimensions_Enabled"], true);
             }
         }
     }

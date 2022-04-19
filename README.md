@@ -1,4 +1,8 @@
-# Xperience Svg Media Dimensions
+# Xperience SVG Media Dimensions
+
+[![GitHub Actions CI: Build](https://github.com/wiredviews/xperience-svg-media-dimensions/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wiredviews/xperience-svg-media-dimensions/actions/workflows/ci.yml)
+
+[![Publish Packages to NuGet](https://github.com/wiredviews/xperience-svg-media-dimensions/actions/workflows/publish.yml/badge.svg?branch=main)](https://github.com/wiredviews/xperience-svg-media-dimensions/actions/workflows/publish.yml)
 
 [![NuGet Package](https://img.shields.io/nuget/v/XperienceCommunity.SvgMediaDimensions.svg)](https://www.nuget.org/packages/XperienceCommunity.SvgMediaDimensions)
 
@@ -25,6 +29,9 @@ This package is compatible with Kentico Xperience 13.
 1. Now any valid SVG that is uploaded to the Media Library, as an Attachment, or as a Meta file (ex: SKU image) will have its width/height values set.
 
 If there are any issues setting the dimensions for an SVG file, the Event Log will be updated with an error with the `EventCode` `SVG_DIMENSIONS_UPDATE_FAILURE`.
+
+1. (optional) The module can be disabled site-wide through the `SvgMediaDimensions_Enabled` CMS Setting. You will need to add
+a [custom settings to Xperience](https://docs.xperience.io/custom-development/creating-custom-modules/adding-custom-website-settings) to toggle the module off. The module defaults to enabled if no settings value is found.
 
 ## How Does It Work?
 

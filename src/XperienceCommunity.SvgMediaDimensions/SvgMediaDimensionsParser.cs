@@ -47,21 +47,30 @@ namespace XperienceCommunity.SvgMediaDimensions
                     {
                         hasUpdated = UpdateDimensions(stream, metaFile);
                     }
-                }
 
-                if (!hasUpdated)
+                    if (!hasUpdated)
+                    {
+                        eventLogService.LogError(
+                            nameof(SvgMediaDimensionsParser),
+                            "SVG_DIMENSIONS_UPDATE_FAILURE",
+                            $"Could not update the dimensions for the SVG meta file.{Environment.NewLine}{Environment.NewLine}{metaFile.MetaFileGUID}{Environment.NewLine}{metaFile.MetaFileName}");
+
+                        return false;
+                    }
+                }
+                else
                 {
                     eventLogService.LogError(
                         nameof(SvgMediaDimensionsParser),
                         "SVG_DIMENSIONS_UPDATE_FAILURE",
-                        $"Could not retrieve attachment binary for meta file.{Environment.NewLine}{Environment.NewLine}{metaFile.MetaFileGUID}{Environment.NewLine}{metaFile.MetaFileName}");
+                        $"Could not retrieve the SVG binary for the meta file.{Environment.NewLine}{Environment.NewLine}{metaFile.MetaFileGUID}{Environment.NewLine}{metaFile.MetaFileName}");
 
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                eventLogService.LogException(nameof(SvgMediaDimensionsParser), "SVG_DIMENSIONS_UPDATE_FAILURE", ex);
+                eventLogService.LogException(nameof(SvgMediaDimensionsParser), "SVG_DIMENSIONS_UPDATE_FAILURE", ex, additionalMessage: $"Meta File: {metaFile.MetaFileGUID}");
 
                 return false;
             }
@@ -137,23 +146,32 @@ namespace XperienceCommunity.SvgMediaDimensions
 
                                 hasUpdated = true;
                             }
+
+                            if (!hasUpdated)
+                            {
+                                eventLogService.LogError(
+                                    nameof(SvgMediaDimensionsParser),
+                                    "SVG_DIMENSIONS_UPDATE_FAILURE",
+                                    $"Could not update the dimensions for the SVG attachment.{Environment.NewLine}{Environment.NewLine}{attachment.AttachmentGUID}{Environment.NewLine}{attachment.AttachmentName}");
+
+                                return false;
+                            }
+                        }
+                        else
+                        {
+                            eventLogService.LogError(
+                                nameof(SvgMediaDimensionsParser),
+                                "SVG_DIMENSIONS_UPDATE_FAILURE",
+                                $"Could not retrieve the SVG binary for the attachment.{Environment.NewLine}{Environment.NewLine}{attachment.AttachmentGUID}{Environment.NewLine}{attachment.AttachmentName}");
+
+                            return false;
                         }
                     }
-                }
-
-                if (!hasUpdated)
-                {
-                    eventLogService.LogError(
-                        nameof(SvgMediaDimensionsParser),
-                        "SVG_DIMENSIONS_UPDATE_FAILURE",
-                        $"Could not retrieve attachment binary for attachment.{Environment.NewLine}{Environment.NewLine}{attachment.AttachmentGUID}{Environment.NewLine}{attachment.AttachmentName}");
-
-                    return false;
                 }
             }
             catch (Exception ex)
             {
-                eventLogService.LogException(nameof(SvgMediaDimensionsParser), "SVG_DIMENSIONS_UPDATE_FAILURE", ex);
+                eventLogService.LogException(nameof(SvgMediaDimensionsParser), "SVG_DIMENSIONS_UPDATE_FAILURE", ex, additionalMessage: $"Attachment: {attachment.AttachmentGUID}");
 
                 return false;
             }
@@ -203,22 +221,31 @@ namespace XperienceCommunity.SvgMediaDimensions
                         {
                             hasUpdated = UpdateDimensions(stream, mediaFile);
                         }
+
+                        if (!hasUpdated)
+                        {
+                            eventLogService.LogError(
+                                nameof(SvgMediaDimensionsParser),
+                                "SVG_DIMENSIONS_UPDATE_FAILURE",
+                                $"Could not update the dimensions for the SVG media file.{Environment.NewLine}{Environment.NewLine}{mediaFile.FileGUID}{Environment.NewLine}{mediaFile.FileName}");
+
+                            return false;
+                        }
                     }
-                }
+                    else
+                    {
+                        eventLogService.LogError(
+                            nameof(SvgMediaDimensionsParser),
+                            "SVG_DIMENSIONS_UPDATE_FAILURE",
+                            $"Could not retrieve the SVG binary for the media file.{Environment.NewLine}{Environment.NewLine}{mediaFile.FileGUID}{Environment.NewLine}{mediaFile.FileName}");
 
-                if (!hasUpdated)
-                {
-                    eventLogService.LogError(
-                        nameof(SvgMediaDimensionsParser),
-                        "SVG_DIMENSIONS_UPDATE_FAILURE",
-                        $"Could not retrieve attachment binary for attachment.{Environment.NewLine}{Environment.NewLine}{mediaFile.FileGUID}{Environment.NewLine}{mediaFile.FileName}");
-
-                    return false;
+                        return false;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                eventLogService.LogException(nameof(SvgMediaDimensionsParser), "SVG_DIMENSIONS_UPDATE_FAILURE", ex);
+                eventLogService.LogException(nameof(SvgMediaDimensionsParser), "SVG_DIMENSIONS_UPDATE_FAILURE", ex, additionalMessage: $"Media File: {mediaFile.FileGUID}");
 
                 return false;
             }
