@@ -26,6 +26,12 @@ This package is compatible with Kentico Xperience 13.
    dotnet add package XperienceCommunity.SvgMediaDimensions
    ```
 
+1. To have Xperience treat `.svg` files as media in a predictable way, add the following app setting to your `web.config`, which [changes the default image extensions](https://docs.xperience.io/configuring-xperience/configuring-the-environment-for-content-editors/configuring-media-libraries/configuring-supported-file-types-in-media-libraries) to include `.svg`.
+
+    ```xml
+    <add key="CMSImageExtensions" value="bmp;gif;ico;png;wmf;jpg;jpeg;tiff;tif;svg" />
+    ```
+
 1. Now any valid SVG that is uploaded to the Media Library, as an Attachment, or as a Meta file (ex: SKU image) will have its width/height values set.
 
 If there are any issues setting the dimensions for an SVG file, the Event Log will be updated with an error with the `EventCode` `SVG_DIMENSIONS_UPDATE_FAILURE`.
@@ -33,10 +39,43 @@ If there are any issues setting the dimensions for an SVG file, the Event Log wi
 1. (optional) The module can be disabled site-wide through the `SvgMediaDimensions_Enabled` CMS Setting. You will need to add
 a [custom settings to Xperience](https://docs.xperience.io/custom-development/creating-custom-modules/adding-custom-website-settings) to toggle the module off. The module defaults to enabled if no settings value is found.
 
+1. (optional) As noted in the Xperience documentation, updating the application's image settings to include the `.svg` file type won't enable the display of SVG files to work everywhere in the CMS. Specifically the media library file preview will show a broken image.
+
+    To fix this, you can edit the file `CMS\CMSModules\MediaLibrary\Controls\MediaLibrary\MediaFileEdit.ascx.cs` and change the `SetupFile()` method to look something like this when handling the rendering of images:
+
+    ```csharp
+    if (ImageHelper.IsImage(FileInfo.FileExtension))
+   {
+      // Ensure max side size 200
+      int[] maxsize = ImageHelper.EnsureImageDimensions(0, 0, 200, FileInfo.FileImageWidth, FileInfo.FileImageHeight);
+      imagePreview.Width = maxsize[0];
+      imagePreview.Height = maxsize[1];
+
+      // Do not add 'maxsidesize' or 'width'/'height' query parameters to the image URL
+      // for SVG images, as these settings are not compatible or applicable
+      if (FileInfo.FileExtension.EndsWith("svg"))
+      {
+         imagePreview.URL = permanentUrl;
+         imagePreview.SizeToURL = false;
+      }
+      else
+      {
+         imagePreview.URL = URLHelper.AddParameterToUrl(permanentUrl, "maxsidesize", "200");
+      }
+
+      imagePreview.URL = URLHelper.AddParameterToUrl(imagePreview.URL, "chset", Guid.NewGuid().ToString());
+
+      plcImagePreview.Visible = true;
+      plcMediaPreview.Visible = false;
+
+      pnlPrew.Visible = true;
+   }
+   ```
+
 ## How Does It Work?
 
 A custom module intercepts insertions/updates of Media Files (`MediaLibraryInfo`, `IAttachment`, `MetaFileInfo`) and sets the width/height
-values of the media before they are insert into the database, if the media file is a valid SVG.
+values of the media before they are inserted into the database, if the media file is a valid SVG.
 
 ## References
 

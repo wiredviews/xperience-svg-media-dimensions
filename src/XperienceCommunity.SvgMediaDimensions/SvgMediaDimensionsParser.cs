@@ -39,31 +39,46 @@ namespace XperienceCommunity.SvgMediaDimensions
             try
             {
                 bool hasUpdated = false;
-                byte[] binary = GetFileBinary(metaFile);
 
-                if (binary is object)
+                if (metaFile.InputStream?.Length > 0)
                 {
-                    using (var stream = new MemoryStream(binary))
-                    {
-                        hasUpdated = UpdateDimensions(stream, metaFile);
-                    }
+                    hasUpdated = UpdateDimensions(metaFile.InputStream, metaFile);
 
-                    if (!hasUpdated)
+                    if (metaFile.InputStream.CanSeek)
                     {
-                        eventLogService.LogError(
-                            nameof(SvgMediaDimensionsParser),
-                            "SVG_DIMENSIONS_UPDATE_FAILURE",
-                            $"Could not update the dimensions for the SVG meta file.{Environment.NewLine}{Environment.NewLine}{metaFile.MetaFileGUID}{Environment.NewLine}{metaFile.MetaFileName}");
-
-                        return false;
+                        // If we don't reset the stream, then Xperience won't have any
+                        // data to read to populate the file in external (Azure/AWS) storage
+                        metaFile.InputStream.Seek(0, SeekOrigin.Begin);
                     }
                 }
                 else
                 {
+                    byte[] binary = GetFileBinary(metaFile);
+
+                    if (binary is object)
+                    {
+                        using (var stream = new MemoryStream(binary))
+                        {
+                            hasUpdated = UpdateDimensions(stream, metaFile);
+                        }
+                    }
+                    else
+                    {
+                        eventLogService.LogError(
+                            nameof(SvgMediaDimensionsParser),
+                            "SVG_DIMENSIONS_UPDATE_FAILURE",
+                            $"Could not retrieve the SVG binary for the meta file.{Environment.NewLine}{Environment.NewLine}{metaFile.MetaFileGUID}{Environment.NewLine}{metaFile.MetaFileName}");
+
+                        return false;
+                    }
+                }
+
+                if (!hasUpdated)
+                {
                     eventLogService.LogError(
                         nameof(SvgMediaDimensionsParser),
                         "SVG_DIMENSIONS_UPDATE_FAILURE",
-                        $"Could not retrieve the SVG binary for the meta file.{Environment.NewLine}{Environment.NewLine}{metaFile.MetaFileGUID}{Environment.NewLine}{metaFile.MetaFileName}");
+                        $"Could not update the dimensions for the SVG meta file.{Environment.NewLine}{Environment.NewLine}{metaFile.MetaFileGUID}{Environment.NewLine}{metaFile.MetaFileName}");
 
                     return false;
                 }
@@ -207,9 +222,16 @@ namespace XperienceCommunity.SvgMediaDimensions
             {
                 bool hasUpdated = false;
 
-                if (mediaFile.FileBinaryStream.Length > 0)
+                if (mediaFile.FileBinaryStream?.Length > 0)
                 {
-                    UpdateDimensions(mediaFile.FileBinaryStream, mediaFile);
+                    hasUpdated = UpdateDimensions(mediaFile.FileBinaryStream, mediaFile);
+
+                    if (mediaFile.FileBinaryStream.CanSeek)
+                    {
+                        // If we don't reset the stream, then Xperience won't have any
+                        // data to read to populate the file in external (Azure/AWS) storage
+                        mediaFile.FileBinaryStream.Seek(0, SeekOrigin.Begin);
+                    }
                 }
                 else
                 {
@@ -221,16 +243,6 @@ namespace XperienceCommunity.SvgMediaDimensions
                         {
                             hasUpdated = UpdateDimensions(stream, mediaFile);
                         }
-
-                        if (!hasUpdated)
-                        {
-                            eventLogService.LogError(
-                                nameof(SvgMediaDimensionsParser),
-                                "SVG_DIMENSIONS_UPDATE_FAILURE",
-                                $"Could not update the dimensions for the SVG media file.{Environment.NewLine}{Environment.NewLine}{mediaFile.FileGUID}{Environment.NewLine}{mediaFile.FileName}");
-
-                            return false;
-                        }
                     }
                     else
                     {
@@ -241,6 +253,16 @@ namespace XperienceCommunity.SvgMediaDimensions
 
                         return false;
                     }
+                }
+
+                if (!hasUpdated)
+                {
+                    eventLogService.LogError(
+                        nameof(SvgMediaDimensionsParser),
+                        "SVG_DIMENSIONS_UPDATE_FAILURE",
+                        $"Could not update the dimensions for the SVG media file.{Environment.NewLine}{Environment.NewLine}{mediaFile.FileGUID}{Environment.NewLine}{mediaFile.FileName}");
+
+                    return false;
                 }
             }
             catch (Exception ex)
