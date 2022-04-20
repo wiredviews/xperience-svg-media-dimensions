@@ -26,20 +26,20 @@ This package is compatible with Kentico Xperience 13.
    dotnet add package XperienceCommunity.SvgMediaDimensions
    ```
 
-1. To have Xperience treat `.svg` files as media in a predictable way, add the following app setting to your `web.config`, which [changes the default image extensions](https://docs.xperience.io/configuring-xperience/configuring-the-environment-for-content-editors/configuring-media-libraries/configuring-supported-file-types-in-media-libraries) to include `.svg`.
+1. Now any valid SVG that is uploaded to the Media Library, as an Attachment, or as a Meta file (ex: SKU image) will have its width/height values set.
+
+    If there are any issues setting the dimensions for an SVG file, the Event Log will be updated with an error with the `EventCode` `SVG_DIMENSIONS_UPDATE_FAILURE`.
+
+1. (optional) The module can be disabled site-wide through the `SvgMediaDimensions_Enabled` CMS Setting. You will need to add
+a [custom settings to Xperience](https://docs.xperience.io/custom-development/creating-custom-modules/adding-custom-website-settings) to toggle the module off. The module defaults to enabled if no settings value is found.
+
+1. (optional) To have Xperience treat `.svg` files as media in a predictable way, add the following app setting to your `web.config`, which [changes the default image extensions](https://docs.xperience.io/configuring-xperience/configuring-the-environment-for-content-editors/configuring-media-libraries/configuring-supported-file-types-in-media-libraries) to include `.svg`.
 
     ```xml
     <add key="CMSImageExtensions" value="bmp;gif;ico;png;wmf;jpg;jpeg;tiff;tif;svg" />
     ```
 
-1. Now any valid SVG that is uploaded to the Media Library, as an Attachment, or as a Meta file (ex: SKU image) will have its width/height values set.
-
-If there are any issues setting the dimensions for an SVG file, the Event Log will be updated with an error with the `EventCode` `SVG_DIMENSIONS_UPDATE_FAILURE`.
-
-1. (optional) The module can be disabled site-wide through the `SvgMediaDimensions_Enabled` CMS Setting. You will need to add
-a [custom settings to Xperience](https://docs.xperience.io/custom-development/creating-custom-modules/adding-custom-website-settings) to toggle the module off. The module defaults to enabled if no settings value is found.
-
-1. (optional) As noted in the Xperience documentation, updating the application's image settings to include the `.svg` file type won't enable the display of SVG files to work everywhere in the CMS. Specifically the media library file preview will show a broken image.
+    As noted in the Xperience documentation, updating the application's image settings to include the `.svg` file type won't enable the display of SVG files to work everywhere in the CMS. Specifically the media library file preview will show a broken image.
 
     To fix this, you can edit the file `CMS\CMSModules\MediaLibrary\Controls\MediaLibrary\MediaFileEdit.ascx.cs` and change the `SetupFile()` method to look something like this when handling the rendering of images:
 
